@@ -18,14 +18,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-
-      - name: Bump Version
-        id: bump_version
-        uses: browniebroke/bump-version@v1
+      - name: Bump version
+        uses: remorses/bump-version@js
         with:
-          filename: version.txt
-          bump: patch
-
+          version_file: ./version.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Set up Docker
         run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 548844171305.dkr.ecr.us-east-1.amazonaws.com
 
