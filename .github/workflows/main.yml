@@ -2,8 +2,8 @@ name: "App dev"
 
 on:
   push:
-    paths:
-      - 'app/**'
+    branches:
+      - main
 
 jobs:
   my_deploy:
