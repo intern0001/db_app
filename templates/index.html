@@ -1,0 +1,16 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PostgreSQL Database Test</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Data from PostgreSQL Database:</h1>
+    <ul>
+        {% for row in data %}
+            <li>{{ row }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
