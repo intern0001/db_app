@@ -36,10 +36,10 @@ jobs:
         run: docker images
 
       - name: Tag Docker Image
-        run: docker tag private-ecr-test:latest 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v${{ steps.vars.outputs.tag }}
+        run: docker tag private-ecr-test:latest 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v${{ steps.vars.outputs.version }}
 
       - name: Push Docker Image
-        run: docker push 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v${{ steps.vars.outputs.tag }}
+        run: docker push 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v${{ steps.vars.outputs.version }}
 
       - name: Display Docker Images After Push
         run: docker images
