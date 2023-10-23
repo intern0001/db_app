@@ -1,16 +1,45 @@
-name: "App"
+name: "App dev"
 
 on:
   push:
     paths:
       - 'app/**'
+
 jobs:
-  deploy:
-    runs-on: [ubuntu-latest]  
+  my_deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Bump version
-        uses: remorses/bump-version@js
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          version_file: ./VERSION
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Bump Version
+        id: bump_version
+        uses: browniebroke/bump-version@v1
+        with:
+          filename: version.txt
+          bump: patch
+
+      - name: Set up Docker
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 548844171305.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build
+        run: docker build -t private-ecr-test .
+
+      - name: Check Docker Images
+        run: docker images
+
+      - name: Tag Docker Image
+        run: docker tag private-ecr-test:latest 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v{{ steps.bump_version.outputs.new_version }}
+
+      - name: Push Docker Image
+        run: docker push 548844171305.dkr.ecr.us-east-1.amazonaws.com/private-ecr-test:v${{ steps.bump_version.outputs.new_version }}
+
+      - name: Display Docker Images After Push
+        run: docker images
